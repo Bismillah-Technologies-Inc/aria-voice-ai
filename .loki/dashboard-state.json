@@ -1,0 +1,139 @@
+{
+  "timestamp": "2026-03-07T09:15:09Z",
+  "version": "6.10.0",
+  "project": {
+    "name": "voice-ai",
+    "path": "/Users/mirzakhan/Projects/voice-ai"
+  },
+  "mode": "autonomous",
+  "provider": "claude",
+  "phase": "BOOTSTRAP",
+  "complexity": "standard",
+  "iteration": 0,
+  "startedAt": "2026-03-07T09:08:32Z",
+  "rarv": {
+    "currentStep": 0,
+    "stages": ["reason", "act", "reflect", "verify"]
+  },
+  "tasks": {
+    "pending": [],
+    "inProgress": [],
+    "review": [],
+    "completed": [],
+    "failed": [
+  {
+    "id": "iteration-1",
+    "type": "iteration",
+    "title": "Iteration 1",
+    "status": "failed",
+    "completedAt": "2026-03-07T09:08:47Z",
+    "exitCode": 1,
+    "provider": "claude"
+  },
+  {
+    "id": "iteration-2",
+    "type": "iteration",
+    "title": "Iteration 2",
+    "status": "failed",
+    "completedAt": "2026-03-07T09:10:11Z",
+    "exitCode": 1,
+    "provider": "claude"
+  },
+  {
+    "id": "iteration-3",
+    "type": "iteration",
+    "title": "Iteration 3",
+    "status": "failed",
+    "completedAt": "2026-03-07T09:12:25Z",
+    "exitCode": 1,
+    "provider": "claude"
+  }
+]
+  },
+  "agents": [],
+  "metrics": {
+    "tasksCompleted": 0,
+    "tasksFailed": 0,
+    "cpuUsage": 19,
+    "memoryUsage": 49,
+    "resourceStatus": "ok"
+  },
+  "memory": {
+    "episodic": 0,
+    "semantic": 0,
+    "procedural": 0
+  },
+  "qualityGates": null,
+  "council": {
+    "initialized": true,
+    "enabled": true,
+    "total_votes": 0,
+    "approve_votes": 0,
+    "reject_votes": 0,
+    "last_check_iteration": 0,
+    "consecutive_no_change": 0,
+    "done_signals": 0,
+    "convergence_history": [],
+    "verdicts": []
+},
+  "checklist": null,
+  "appRunner": {"status":"not_initialized"},
+  "playwright": null,
+  "budget": null,
+  "context": {
+  "session_id": "00cd3275-ccef-4ad4-9172-442f706d2dc9",
+  "provider": "claude",
+  "updated_at": "2026-03-07T09:12:25.639900+00:00",
+  "current": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_tokens": 0,
+    "cache_creation_tokens": 0,
+    "total_tokens": 0,
+    "context_window_pct": 0.0,
+    "estimated_cost_usd": 0.0
+  },
+  "compactions": [],
+  "per_iteration": [
+    {
+      "iteration": 1,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cost_usd": 0.0,
+      "timestamp": "2026-03-07T09:08:47.362324+00:00",
+      "compacted": false
+    },
+    {
+      "iteration": 2,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cost_usd": 0.0,
+      "timestamp": "2026-03-07T09:10:11.902254+00:00",
+      "compacted": false
+    },
+    {
+      "iteration": 3,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cost_usd": 0.0,
+      "timestamp": "2026-03-07T09:12:25.640286+00:00",
+      "compacted": false
+    }
+  ],
+  "totals": {
+    "total_input": 0,
+    "total_output": 0,
+    "total_cost_usd": 0.0,
+    "compaction_count": 0,
+    "iterations_tracked": 3
+  }
+},
+  "tokens": {"input": 0, "output": 0, "cost_usd": 0.0},
+  "notifications": {"total":0,"unacknowledged":0,"critical":0,"warning":0,"info":0}
+}

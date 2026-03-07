@@ -1,0 +1,29 @@
+[
+  {
+    "id": "iteration-1",
+    "type": "iteration",
+    "title": "Iteration 1",
+    "status": "failed",
+    "completedAt": "2026-03-07T09:08:47Z",
+    "exitCode": 1,
+    "provider": "claude"
+  },
+  {
+    "id": "iteration-2",
+    "type": "iteration",
+    "title": "Iteration 2",
+    "status": "failed",
+    "completedAt": "2026-03-07T09:10:11Z",
+    "exitCode": 1,
+    "provider": "claude"
+  },
+  {
+    "id": "iteration-3",
+    "type": "iteration",
+    "title": "Iteration 3",
+    "status": "failed",
+    "completedAt": "2026-03-07T09:12:25Z",
+    "exitCode": 1,
+    "provider": "claude"
+  }
+]

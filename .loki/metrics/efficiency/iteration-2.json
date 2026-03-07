@@ -1,0 +1,12 @@
+{
+  "iteration": 2,
+  "model": "opus",
+  "phase": "BOOTSTRAP",
+  "duration_ms": 3000,
+  "provider": "claude",
+  "status": "failed",
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "cost_usd": 0.0,
+  "timestamp": "2026-03-07T09:10:11Z"
+}

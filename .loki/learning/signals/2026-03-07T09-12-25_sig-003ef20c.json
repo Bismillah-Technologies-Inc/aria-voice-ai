@@ -1,0 +1,19 @@
+{
+  "id": "sig-003ef20c",
+  "type": "error_pattern",
+  "source": "cli",
+  "action": "iteration_complete",
+  "context": {},
+  "outcome": "failure",
+  "confidence": 0.8,
+  "timestamp": "2026-03-07T09:12:25.655643+00:00Z",
+  "metadata": {},
+  "error_type": "IterationFailure",
+  "error_message": "Iteration 3 failed with exit code 1",
+  "resolution": "",
+  "recovery_steps": [
+    "Check logs",
+    "Review error output",
+    "Retry iteration"
+  ]
+}

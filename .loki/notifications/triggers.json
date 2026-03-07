@@ -1,0 +1,57 @@
+{
+  "triggers": [
+    {
+      "id": "budget-80pct",
+      "type": "budget_threshold",
+      "enabled": true,
+      "threshold_pct": 80,
+      "severity": "warning",
+      "message": "Budget usage exceeded {pct}%"
+    },
+    {
+      "id": "context-90pct",
+      "type": "context_threshold",
+      "enabled": true,
+      "threshold_pct": 90,
+      "severity": "critical",
+      "message": "Context window at {pct}% capacity"
+    },
+    {
+      "id": "sensitive-file",
+      "type": "file_access",
+      "enabled": true,
+      "patterns": [
+        "\\.env",
+        "credentials",
+        "\\.pem$",
+        "\\.key$",
+        "secret"
+      ],
+      "severity": "critical",
+      "message": "Sensitive file accessed: {file}"
+    },
+    {
+      "id": "quality-gate-fail",
+      "type": "quality_gate",
+      "enabled": true,
+      "severity": "warning",
+      "message": "Quality gate failed: {gate}"
+    },
+    {
+      "id": "stuck-iteration",
+      "type": "stagnation",
+      "enabled": true,
+      "max_no_progress": 3,
+      "severity": "warning",
+      "message": "No progress detected for {count} consecutive iterations"
+    },
+    {
+      "id": "compaction-freq",
+      "type": "compaction_frequency",
+      "enabled": true,
+      "max_per_hour": 3,
+      "severity": "warning",
+      "message": "Frequent compactions: {count} in the last hour"
+    }
+  ]
+}

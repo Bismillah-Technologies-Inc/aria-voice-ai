@@ -1,0 +1,11 @@
+{
+  "id": "cp-1-1772874528",
+  "timestamp": "2026-03-07T09:08:48Z",
+  "iteration": 1,
+  "task_id": "iteration-1-fail",
+  "task_description": "iteration-1 failed (exit=1)",
+  "git_sha": "no-git",
+  "git_branch": "unknown",
+  "provider": "claude",
+  "phase": "BOOTSTRAP"
+}

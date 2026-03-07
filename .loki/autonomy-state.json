@@ -1,0 +1,10 @@
+{
+    "retryCount": 2,
+    "status": "exited",
+    "lastExitCode": 1,
+    "lastRun": "2026-03-07T09:12:25Z",
+    "prdPath": "./aria_prd.md",
+    "pid": 54424,
+    "maxRetries": 50,
+    "baseWait": 60
+}

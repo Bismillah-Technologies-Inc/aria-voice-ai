@@ -1,0 +1,8 @@
+{
+  "id": "6e0b1ff6",
+  "type": "session",
+  "source": "cli",
+  "timestamp": "2026-03-07T09:08:31.220Z",
+  "payload": {"action":"start","provider":"claude","prd_path":"./aria_prd.md"},
+  "version": "1.0"
+}

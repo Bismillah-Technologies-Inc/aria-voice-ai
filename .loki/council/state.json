@@ -1,0 +1,12 @@
+{
+    "initialized": true,
+    "enabled": true,
+    "total_votes": 0,
+    "approve_votes": 0,
+    "reject_votes": 0,
+    "last_check_iteration": 0,
+    "consecutive_no_change": 0,
+    "done_signals": 0,
+    "convergence_history": [],
+    "verdicts": []
+}

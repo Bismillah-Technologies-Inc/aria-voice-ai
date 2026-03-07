@@ -1,0 +1,7 @@
+{"timestamp":"2026-03-07T09:08:44Z","type":"session_start","data":{"provider":"claude","prd":"./aria_prd.md","parallel":false,"complexity":"standard","pid":54424}}
+{"timestamp":"2026-03-07T09:08:44Z","type":"iteration_start","data":{"iteration":1,"provider":"claude","prd":"./aria_prd.md"}}
+{"timestamp":"2026-03-07T09:08:47Z","type":"iteration_complete","data":{"iteration":1,"status":"failed","exitCode":1,"provider":"claude"}}
+{"timestamp":"2026-03-07T09:10:08Z","type":"iteration_start","data":{"iteration":2,"provider":"claude","prd":"./aria_prd.md"}}
+{"timestamp":"2026-03-07T09:10:11Z","type":"iteration_complete","data":{"iteration":2,"status":"failed","exitCode":1,"provider":"claude"}}
+{"timestamp":"2026-03-07T09:12:22Z","type":"iteration_start","data":{"iteration":3,"provider":"claude","prd":"./aria_prd.md"}}
+{"timestamp":"2026-03-07T09:12:25Z","type":"iteration_complete","data":{"iteration":3,"status":"failed","exitCode":1,"provider":"claude"}}

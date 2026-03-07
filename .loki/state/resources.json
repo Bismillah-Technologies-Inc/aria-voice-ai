@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-03-07T09:13:45Z",
+  "cpu": {
+    "usage_percent": 19,
+    "threshold_percent": 80,
+    "status": "ok"
+  },
+  "memory": {
+    "usage_percent": 49,
+    "threshold_percent": 80,
+    "status": "ok"
+  },
+  "overall_status": "ok",
+  "warning_message": ""
+}

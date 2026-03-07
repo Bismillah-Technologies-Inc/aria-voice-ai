@@ -1,0 +1,6 @@
+{"id": "cp-1-1772874527", "ts": "2026-03-07T09:08:47Z", "iter": 1, "task": "iteration-1 complete", "sha": "no-git"}
+{"id": "cp-1-1772874528", "ts": "2026-03-07T09:08:48Z", "iter": 1, "task": "iteration-1 failed (exit=1)", "sha": "no-git"}
+{"id": "cp-2-1772874612", "ts": "2026-03-07T09:10:12Z", "iter": 2, "task": "iteration-2 complete", "sha": "no-git"}
+{"id": "cp-2-1772874612", "ts": "2026-03-07T09:10:12Z", "iter": 2, "task": "iteration-2 failed (exit=1)", "sha": "no-git"}
+{"id": "cp-3-1772874745", "ts": "2026-03-07T09:12:25Z", "iter": 3, "task": "iteration-3 complete", "sha": "no-git"}
+{"id": "cp-3-1772874746", "ts": "2026-03-07T09:12:26Z", "iter": 3, "task": "iteration-3 failed (exit=1)", "sha": "no-git"}
