@@ -7,7 +7,7 @@ the existing CRM, calendar, dashboard, and SMS workflows.
 
 ## Prerequisites
 - AWS account with Bedrock model access enabled (Claude Sonnet 4.5, Amazon Nova Micro)
-- Amazon Connect instance with a claimed phone number
+- Telnyx account with a claimed phone number
 - Deepgram account ($200 free credit)
 - Google Cloud service account with Calendar access
 - RDS PostgreSQL instance (or local for dev)
@@ -19,12 +19,18 @@ the existing CRM, calendar, dashboard, and SMS workflows.
 3. Store secrets in SSM: see `infrastructure/template.yaml` for parameter names
 4. Create database: `psql $DB_URL < db/schema.sql`
 5. Deploy: `bash scripts/deploy.sh`
-6. Configure Amazon Connect Contact Flow with the Lambda ARN from SAM outputs
-7. Call your Connect phone number
+6. Point your Telnyx number's webhook to the EC2 bridge: `POST https://<ec2-host>/telnyx/call-control`
+7. Start the EC2 bridge: `node ec2/server.mjs`
+8. Call your Telnyx number
 
 ## Local Testing
 
-`bash scripts/test-call.sh`
+Start the EC2 bridge server in one terminal, then run the smoke test:
+
+```
+node ec2/server.mjs &
+npm run test:local
+```
 
 ## Architecture
 

@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "lambdas/connect-handler",
     "lambdas/post-call-handler",
     "lambdas/sms-reply-handler",
     "lambdas/dashboard-api",
