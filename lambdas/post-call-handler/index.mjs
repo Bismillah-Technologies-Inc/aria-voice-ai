@@ -18,7 +18,7 @@ export const handler = async (event) => {
   if (!contactId) return;
 
   const callRes = await query(
-    `SELECT * FROM calls WHERE contact_id = $1 LIMIT 1`,
+    `SELECT * FROM calls WHERE id = $1::uuid LIMIT 1`,
     [contactId]
   );
   if (!callRes.rows.length) return;
