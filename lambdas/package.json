@@ -1,0 +1,12 @@
+{
+  "name": "aria-lambdas",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.0.0",
+    "@aws-sdk/client-ssm": "^3.1019.0",
+    "googleapis": "^137.0.0",
+    "pg": "^8.11.0",
+    "ws": "^8.14.0"
+  }
+}

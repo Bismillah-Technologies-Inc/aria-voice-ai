@@ -1,3 +1,20 @@
+node_modules/
+.env
+.env.dev
+.env.prod
+*.zip
+.aws-sam/
+dist/
+coverage/
+*.log
+.loki/
+logs/
+.DS_Store
+
+# Dashboard build artifacts
+dashboard/dist/
+dashboard/.env
+dashboard/.env.local
 
 
 #Ignore vscode AI rules

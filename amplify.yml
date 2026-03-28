@@ -1,0 +1,33 @@
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd dashboard
+            - npm ci
+        build:
+          commands:
+            # Inject Amplify branch env vars as Vite build-time vars
+            - echo "VITE_API_URL=$API_URL" >> .env
+            - echo "VITE_COGNITO_USER_POOL_ID=$COGNITO_USER_POOL_ID" >> .env
+            - echo "VITE_COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID" >> .env
+            - echo "VITE_AWS_REGION=${AWS_DEFAULT_REGION:-us-east-1}" >> .env
+            - npm run build
+      artifacts:
+        baseDirectory: dashboard/dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - dashboard/node_modules/**/*
+    appRoot: /
+
+# Custom headers and SPA rewrite — configured in Amplify console or via
+# the rewrite rules below (Amplify will apply these automatically for
+# apps with customRules in the console; this file is for build only).
+#
+# Add this rewrite rule in the Amplify Console → App settings → Rewrites and redirects:
+#   Source:      </^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json|webp)$)([^.]+$)/>
+#   Target:      /index.html
+#   Type:        200 (Rewrite)

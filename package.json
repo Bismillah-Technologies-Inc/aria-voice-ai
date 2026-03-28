@@ -1,0 +1,33 @@
+{
+  "name": "aria-mvp",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "lambdas/connect-handler",
+    "lambdas/post-call-handler",
+    "lambdas/sms-reply-handler",
+    "lambdas/dashboard-api",
+    "dashboard"
+  ],
+  "scripts": {
+    "deploy": "bash scripts/deploy.sh dev",
+    "deploy:dev": "bash scripts/deploy.sh dev",
+    "deploy:prod": "bash scripts/deploy.sh prod",
+    "setup:dev": "bash scripts/setup-aws.sh dev",
+    "setup:prod": "bash scripts/setup-aws.sh prod",
+    "assistant:setup:dev": "node scripts/setup-telnyx-assistant.mjs dev",
+    "assistant:setup:prod": "node scripts/setup-telnyx-assistant.mjs prod",
+    "assistant:test:dev": "node scripts/test-telnyx-assistant.mjs dev",
+    "assistant:test:prod": "node scripts/test-telnyx-assistant.mjs prod",
+    "assistant:shadow:dev": "node scripts/assign-telnyx-assistant-number.mjs dev shadow",
+    "assistant:shadow:prod": "node scripts/assign-telnyx-assistant-number.mjs prod shadow",
+    "assistant:cutover:dev": "node scripts/assign-telnyx-assistant-number.mjs dev primary",
+    "assistant:cutover:prod": "node scripts/assign-telnyx-assistant-number.mjs prod primary",
+    "assistant:verify:dev": "node scripts/verify-telnyx-assistant-cutover.mjs dev",
+    "assistant:verify:prod": "node scripts/verify-telnyx-assistant-cutover.mjs prod",
+    "assistant:rollback:dev": "node scripts/rollback-telnyx-number.mjs dev primary",
+    "assistant:rollback:prod": "node scripts/rollback-telnyx-number.mjs prod primary",
+    "dashboard:dev": "cd dashboard && npm run dev",
+    "test:local": "bash scripts/test-call.sh"
+  }
+}

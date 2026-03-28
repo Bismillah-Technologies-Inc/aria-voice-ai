@@ -1,0 +1,248 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Aria Voice Agent MVP
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod
+  AllowedOrigin:
+    Type: String
+    Default: '*'
+    Description: CORS origin for dashboard API
+
+Conditions:
+  IsProd: !Equals [!Ref Environment, prod]
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 900          # 15 min max — covers longest calls
+    MemorySize: 512
+    Environment:
+      Variables:
+        ENVIRONMENT:                       !Ref Environment
+        DEEPGRAM_API_KEY:                  !Sub '{{resolve:ssm:/aria/${Environment}/DEEPGRAM_API_KEY}}'
+        DEEPGRAM_LLM_PROVIDER:             'anthropic'
+        DEEPGRAM_LLM_MODEL:                'claude-sonnet-4-5'
+        BEDROCK_MODEL_ID:                  !Sub '{{resolve:ssm:/aria/${Environment}/BEDROCK_MODEL_ID}}'
+        BEDROCK_ORCHESTRATOR_MODEL_ID:     'amazon.nova-micro-v1:0'
+        BEDROCK_REGION:                    !Sub '{{resolve:ssm:/aria/${Environment}/BEDROCK_REGION}}'
+        DB_HOST:                           !Sub '{{resolve:ssm:/aria/${Environment}/DB_HOST}}'
+        DB_PORT:                           !Sub '{{resolve:ssm:/aria/${Environment}/DB_PORT}}'
+        DB_NAME:                           !Sub '{{resolve:ssm:/aria/${Environment}/DB_NAME}}'
+        DB_USER:                           !Sub '{{resolve:ssm:/aria/${Environment}/DB_USER}}'
+        DB_PASSWORD:                       !Sub '{{resolve:ssm:/aria/${Environment}/DB_PASSWORD}}'
+        GOOGLE_SERVICE_ACCOUNT_EMAIL:      !Sub '{{resolve:ssm:/aria/${Environment}/GOOGLE_SERVICE_ACCOUNT_EMAIL}}'
+        GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: !Sub '{{resolve:ssm:/aria/${Environment}/GOOGLE_CALENDAR_PRIVATE_KEY}}'
+        GOOGLE_CALENDAR_ID:                !Sub '{{resolve:ssm:/aria/${Environment}/GOOGLE_CALENDAR_ID}}'
+        MIRZA_PHONE:                       !Sub '{{resolve:ssm:/aria/${Environment}/MIRZA_PHONE}}'
+        TELNYX_API_KEY:                    !Sub '{{resolve:ssm:/aria/${Environment}/TELNYX_API_KEY}}'
+        TELNYX_FROM_NUMBER:                !Sub '{{resolve:ssm:/aria/${Environment}/TELNYX_FROM_NUMBER}}'
+        TELNYX_TRANSFER_NUMBER:            !Sub '{{resolve:ssm:/aria/${Environment}/TELNYX_TRANSFER_NUMBER}}'
+        TELNYX_ASSISTANT_WEBHOOK_SECRET_PARAM: !Sub '/aria/${Environment}/TELNYX_ASSISTANT_WEBHOOK_SECRET'
+        BOOKING_LINK:                      !Sub '{{resolve:ssm:/aria/${Environment}/BOOKING_LINK}}'
+        HUMAN_TRANSFER_HOURS_START:        '9'
+        HUMAN_TRANSFER_HOURS_END:          '17'
+        HUMAN_TRANSFER_TIMEZONE:           'America/Chicago'
+        DEMO_BUSINESS_NAME:                'Apex Home Services'
+        DEMO_AGENT_NAME:                   'Aria'
+        ALLOWED_ORIGIN:                    !Ref AllowedOrigin
+
+Resources:
+
+  # ─── Cognito ───────────────────────────────────────────────────
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub 'aria-${Environment}-users'
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - Name: email
+          Required: true
+          Mutable: true
+        - Name: name
+          Required: false
+          Mutable: true
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub 'aria-${Environment}-dashboard'
+      UserPoolId: !Ref CognitoUserPool
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: false
+      SupportedIdentityProviders:
+        - COGNITO
+
+  # ─── Dashboard API Gateway ────────────────────────────────────
+
+  DashboardApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Environment
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref AllowedOrigin
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        AllowMethods:
+          - GET
+          - PUT
+          - OPTIONS
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            IdentitySource: $request.header.Authorization
+            JwtConfiguration:
+              issuer: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}'
+              audience:
+                - !Ref CognitoUserPoolClient
+
+  # ─── Lambda Functions ─────────────────────────────────────────
+
+  PostCallHandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'aria-${Environment}-post-call-handler'
+      CodeUri: ../lambdas/
+      Handler: post-call-handler/index.handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - '*'
+          AllowMethods:
+            - POST
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+          - Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+            Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+
+  AssistantWebhooksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'aria-${Environment}-assistant-webhooks'
+      CodeUri: ../lambdas/
+      Handler: assistant-webhooks/index.handler
+      Timeout: 60
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+          - Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+            Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - '*'
+          AllowMethods:
+            - POST
+
+  SmsReplyHandlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'aria-${Environment}-sms-reply-handler'
+      CodeUri: ../lambdas/
+      Handler: sms-reply-handler/index.handler
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+            Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+      Events:
+        PinpointSnsReply:
+          Type: SNS
+          Properties:
+            Topic: !Ref SmsReplyTopic
+
+  DashboardApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'aria-${Environment}-dashboard-api'
+      CodeUri: ../lambdas/
+      Handler: dashboard-api/index.handler
+      Timeout: 30
+      MemorySize: 256
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Statement:
+          - Effect: Allow
+            Action:
+              - ssm:GetParameter
+            Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+      Events:
+        ApiProxy:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DashboardApi
+            Path: /api/{proxy+}
+            Method: ANY
+
+  # ─── Other Resources ──────────────────────────────────────────
+
+  SmsReplyTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'aria-${Environment}-sms-replies'
+
+Outputs:
+  PostCallHandlerArn:
+    Description: ARN for post-call processing Lambda
+    Value: !GetAtt PostCallHandlerFunction.Arn
+  PostCallHandlerUrl:
+    Description: Function URL for EC2 bridge to trigger post-call processing
+    Value: !GetAtt PostCallHandlerFunctionUrl.FunctionUrl
+  AssistantWebhookArn:
+    Description: ARN for assistant webhook Lambda
+    Value: !GetAtt AssistantWebhooksFunction.Arn
+  AssistantWebhookUrl:
+    Description: Function URL for Telnyx AI Assistant webhooks
+    Value: !GetAtt AssistantWebhooksFunctionUrl.FunctionUrl
+  SmsReplyHandlerArn:
+    Description: ARN for SMS reply handler
+    Value: !GetAtt SmsReplyHandlerFunction.Arn
+  DashboardApiUrl:
+    Description: Dashboard API endpoint
+    Value: !Sub 'https://${DashboardApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}'
+  CognitoUserPoolId:
+    Description: Cognito User Pool ID for dashboard auth
+    Value: !Ref CognitoUserPool
+  CognitoUserPoolClientId:
+    Description: Cognito App Client ID for dashboard auth
+    Value: !Ref CognitoUserPoolClient
