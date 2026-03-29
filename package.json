@@ -12,6 +12,8 @@
     "deploy": "bash scripts/deploy.sh dev",
     "deploy:dev": "bash scripts/deploy.sh dev",
     "deploy:prod": "bash scripts/deploy.sh prod",
+    "migrate:prod": "bash scripts/deploy-telnyx-assistant.sh prod",
+    "migrate:dev": "bash scripts/deploy-telnyx-assistant.sh dev",
     "setup:dev": "bash scripts/setup-aws.sh dev",
     "setup:prod": "bash scripts/setup-aws.sh prod",
     "assistant:setup:dev": "node scripts/setup-telnyx-assistant.mjs dev",
