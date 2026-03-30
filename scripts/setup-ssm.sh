@@ -56,7 +56,8 @@ store_param() {
 }
 
 echo "--- Deepgram ---"
-store_param "DEEPGRAM_API_KEY" "${DEEPGRAM_API_KEY:-}"
+# Optional — only needed if EC2 bridge is re-enabled
+store_param "DEEPGRAM_API_KEY" "${DEEPGRAM_API_KEY:-not-configured}"
 
 echo "--- Bedrock ---"
 store_param "BEDROCK_MODEL_ID"  "${BEDROCK_MODEL_ID:-us.anthropic.claude-sonnet-4-5-20250929-v1:0}"
@@ -71,8 +72,10 @@ store_param "DB_USER" "${DB_USER:-}"
 # from AWS Secrets Manager via the DB_SECRET_ARN CloudFormation parameter.
 
 echo "--- Google Calendar ---"
-store_param "GOOGLE_SERVICE_ACCOUNT_EMAIL" "${GOOGLE_SERVICE_ACCOUNT_EMAIL:-}"
-store_param "GOOGLE_CALENDAR_PRIVATE_KEY"  "${GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY:-}" "SecureString"
+# These are optional — stored as empty string if not configured so CloudFormation
+# SSM dynamic references resolve without error. Calendar tools fail gracefully at runtime.
+store_param "GOOGLE_SERVICE_ACCOUNT_EMAIL" "${GOOGLE_SERVICE_ACCOUNT_EMAIL:-not-configured}"
+store_param "GOOGLE_CALENDAR_PRIVATE_KEY"  "${GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY:-not-configured}" "SecureString"
 store_param "GOOGLE_CALENDAR_ID"           "${GOOGLE_CALENDAR_ID:-primary}"
 
 echo "--- Telnyx ---"
