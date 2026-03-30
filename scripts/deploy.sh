@@ -8,7 +8,7 @@ set -euo pipefail
 
 ENV="${1:-dev}"
 REGION="${AWS_REGION:-us-east-1}"
-ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text --no-cli-pager)
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 STACK_NAME="aria-${ENV}"
 S3_BUCKET="aria-sam-deploy-${ENV}-${ACCOUNT_ID}"
 
@@ -23,7 +23,7 @@ echo "Region: ${REGION}"
 echo ""
 
 # Ensure S3 bucket exists
-aws s3 mb "s3://${S3_BUCKET}" --region "${REGION}" --no-cli-pager 2>/dev/null || true
+aws s3 mb "s3://${S3_BUCKET}" --region "${REGION}" 2>/dev/null || true
 
 # Install Lambda dependencies (shared root install covers all handlers)
 echo "Installing Lambda dependencies..."
@@ -32,13 +32,21 @@ echo "Installing Lambda dependencies..."
 # Build
 sam build --template infrastructure/template.yaml --no-cached
 
+# Load env file if present (for DB_SECRET_ARN)
+ENV_FILE=".env.${ENV}"
+if [ -f "${ENV_FILE}" ]; then
+  set -a; source "${ENV_FILE}"; set +a
+fi
+
 # Deploy
 sam deploy \
   --stack-name "${STACK_NAME}" \
   --s3-bucket "${S3_BUCKET}" \
   --region "${REGION}" \
   --capabilities CAPABILITY_IAM \
-  --parameter-overrides "Environment=${ENV}" \
+  --parameter-overrides \
+    "Environment=${ENV}" \
+    "DBSecretArn=${DB_SECRET_ARN:-}" \
   --no-confirm-changeset \
   --no-fail-on-empty-changeset
 

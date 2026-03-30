@@ -63,11 +63,12 @@ store_param "BEDROCK_MODEL_ID"  "${BEDROCK_MODEL_ID:-us.anthropic.claude-sonnet-
 store_param "BEDROCK_REGION"    "${BEDROCK_REGION:-us-east-1}"
 
 echo "--- Database ---"
-store_param "DB_HOST"     "${DB_HOST:-}"
-store_param "DB_PORT"     "${DB_PORT:-5432}"
-store_param "DB_NAME"     "${DB_NAME:-aria_${ENV}}"
-store_param "DB_USER"     "${DB_USER:-}"
-store_param "DB_PASSWORD" "${DB_PASSWORD:-}"
+store_param "DB_HOST" "${DB_HOST:-}"
+store_param "DB_PORT" "${DB_PORT:-5432}"
+store_param "DB_NAME" "${DB_NAME:-aria_${ENV}}"
+store_param "DB_USER" "${DB_USER:-}"
+# DB_PASSWORD is intentionally omitted — password is fetched at runtime
+# from AWS Secrets Manager via the DB_SECRET_ARN CloudFormation parameter.
 
 echo "--- Google Calendar ---"
 store_param "GOOGLE_SERVICE_ACCOUNT_EMAIL" "${GOOGLE_SERVICE_ACCOUNT_EMAIL:-}"

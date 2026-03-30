@@ -63,7 +63,7 @@ FILL_CHECK_VARS=(
   TELNYX_TRANSFER_NUMBER
   TELNYX_ASSISTANT_WEBHOOK_SECRET
   DB_HOST
-  DB_PASSWORD
+  DB_SECRET_ARN
 )
 
 MISSING=()
@@ -117,7 +117,9 @@ sam deploy \
   --s3-bucket "${S3_BUCKET}" \
   --region "${REGION}" \
   --capabilities CAPABILITY_IAM \
-  --parameter-overrides "Environment=${ENV}" \
+  --parameter-overrides \
+    "Environment=${ENV}" \
+    "DBSecretArn=${DB_SECRET_ARN:-}" \
   --no-confirm-changeset \
   --no-fail-on-empty-changeset
 

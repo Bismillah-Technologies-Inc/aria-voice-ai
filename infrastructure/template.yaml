@@ -13,9 +13,19 @@ Parameters:
     Type: String
     Default: '*'
     Description: CORS origin for dashboard API
+  DBSecretArn:
+    Type: String
+    Default: ''
+    Description: >
+      ARN (or name) of the AWS Secrets Manager secret that holds the RDS
+      password. The secret value must be either a plain string (the password
+      itself) or a JSON object with a "password" key. When provided, Lambda
+      fetches the password at runtime via DB_SECRET_ARN and DB_PASSWORD is
+      not used.
 
 Conditions:
   IsProd: !Equals [!Ref Environment, prod]
+  HasDBSecret: !Not [!Equals [!Ref DBSecretArn, '']]
 
 Globals:
   Function:
@@ -35,7 +45,7 @@ Globals:
         DB_PORT:                           !Sub '{{resolve:ssm:/aria/${Environment}/DB_PORT}}'
         DB_NAME:                           !Sub '{{resolve:ssm:/aria/${Environment}/DB_NAME}}'
         DB_USER:                           !Sub '{{resolve:ssm:/aria/${Environment}/DB_USER}}'
-        DB_PASSWORD:                       !Sub '{{resolve:ssm:/aria/${Environment}/DB_PASSWORD}}'
+        DB_SECRET_ARN:                     !Ref DBSecretArn
         GOOGLE_SERVICE_ACCOUNT_EMAIL:      !Sub '{{resolve:ssm:/aria/${Environment}/GOOGLE_SERVICE_ACCOUNT_EMAIL}}'
         GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: !Sub '{{resolve:ssm:/aria/${Environment}/GOOGLE_CALENDAR_PRIVATE_KEY}}'
         GOOGLE_CALENDAR_ID:                !Sub '{{resolve:ssm:/aria/${Environment}/GOOGLE_CALENDAR_ID}}'
@@ -144,6 +154,10 @@ Resources:
             Action:
               - ssm:GetParameter
             Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+          - Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource: !If [HasDBSecret, !Ref DBSecretArn, !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:aria-${Environment}-db-*']
 
   AssistantWebhooksFunction:
     Type: AWS::Serverless::Function
@@ -163,6 +177,10 @@ Resources:
             Action:
               - ssm:GetParameter
             Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+          - Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource: !If [HasDBSecret, !Ref DBSecretArn, !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:aria-${Environment}-db-*']
       FunctionUrlConfig:
         AuthType: NONE
         Cors:
@@ -185,6 +203,10 @@ Resources:
             Action:
               - ssm:GetParameter
             Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+          - Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource: !If [HasDBSecret, !Ref DBSecretArn, !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:aria-${Environment}-db-*']
       Events:
         PinpointSnsReply:
           Type: SNS
@@ -206,6 +228,10 @@ Resources:
             Action:
               - ssm:GetParameter
             Resource: !Sub 'arn:aws:ssm:*:*:parameter/aria/${Environment}/*'
+          - Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource: !If [HasDBSecret, !Ref DBSecretArn, !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:aria-${Environment}-db-*']
       Events:
         ApiProxy:
           Type: HttpApi
