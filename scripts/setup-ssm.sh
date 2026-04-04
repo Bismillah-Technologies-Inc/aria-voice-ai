@@ -43,13 +43,13 @@ store_param() {
     fi
   fi
 
+  # Pass value via cli-input-json to avoid AWS CLI v1 treating https:// as a URL
+  local json
+  json=$(node -e "process.stdout.write(JSON.stringify({Name:process.argv[1],Value:process.argv[2],Type:process.argv[3],Overwrite:true}))" \
+    "${PREFIX}/${name}" "${value}" "${type}")
   aws ssm put-parameter \
-    --name "${PREFIX}/${name}" \
-    --value "${value}" \
-    --type "${type}" \
-    --overwrite \
     --region "${REGION}" \
-    --no-cli-pager \
+    --cli-input-json "${json}" \
     > /dev/null
 
   echo "  ✓ ${PREFIX}/${name}"
@@ -75,7 +75,7 @@ echo "--- Google Calendar ---"
 # These are optional — stored as empty string if not configured so CloudFormation
 # SSM dynamic references resolve without error. Calendar tools fail gracefully at runtime.
 store_param "GOOGLE_SERVICE_ACCOUNT_EMAIL" "${GOOGLE_SERVICE_ACCOUNT_EMAIL:-not-configured}"
-store_param "GOOGLE_CALENDAR_PRIVATE_KEY"  "${GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY:-not-configured}" "SecureString"
+store_param "GOOGLE_CALENDAR_PRIVATE_KEY"  "${GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY:-not-configured}"
 store_param "GOOGLE_CALENDAR_ID"           "${GOOGLE_CALENDAR_ID:-primary}"
 
 echo "--- Telnyx ---"
