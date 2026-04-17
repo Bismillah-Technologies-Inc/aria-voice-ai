@@ -584,8 +584,13 @@ async function handleTool(toolName, event) {
   const args = body.arguments || body.args || body;
   const context = extractConversationContext(event, body);
 
-  const result = await executeBusinessTool(toolName, args, context);
-  return json(200, result);
+  try {
+    const result = await executeBusinessTool(toolName, args, context);
+    return json(200, result);
+  } catch (error) {
+    console.error(`[ASSISTANT TOOL] ${toolName} failed`, error);
+    return json(200, { success: false, error: error.message });
+  }
 }
 
 async function handleEvents(event) {
